@@ -8,13 +8,14 @@ Summary:	Bug tracking system
 Summary(pl):	System ¶ledzenia b³êdów
 Name:		bugzilla
 Version:	2.18
-Release:	0.%{_rcver}.1
+Release:	0.%{_rcver}.2
 License:	GPL
 Group:		Applications/WWW
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}%{_rcver}.tar.gz
 # Source0-md5:	aadd24a0177a7b44ef7b2785c0d6740f
 Source1:	%{name}.conf
 Patch0:		%{name}-httpd_user.patch
+Patch1:		%{name}-chdir.patch
 URL:		http://www.bugzilla.org/
 BuildRequires:	perl-base
 Requires(post,postun):	apache
