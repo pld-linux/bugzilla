@@ -6,12 +6,12 @@ Version:	2.17.7
 Release:	0.1
 License:	GPL
 Group:		Aplications/WWW
-Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/bugzilla-2.17.7.tar.gz
+Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}.tar.gz
 # Source0-md5:	b5e34e50e3eda5647bdca223fb6fd797
 Source1:	%{name}.conf
 Patch0:		%{name}-httpd_user.patch
 URL:		http://www.bugzilla.org/
-BuildRequires:	perl
+BuildRequires:	perl-base
 Requires(post,postun):	apache
 Requires(post,postun):	grep
 Requires(postun):	fileutils
