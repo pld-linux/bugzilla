@@ -2,12 +2,12 @@
 Summary:	Bug tracking system
 Summary(pl):	System ¶ledzenia b³êdów
 Name:		bugzilla
-Version:	2.17.4
+Version:	2.17.6
 Release:	0.1
 License:	GPL
 Group:		Aplications/WWW
 Source0:	http://ftp.mozilla.org/pub/webtools/%{name}-%{version}.tar.gz
-# Source0-md5:	95088c973b85d5afd35e977d51f6757c
+# Source0-md5:	1fd6bdcd18838d54f54b30eeaa7d14ce
 Source1:	%{name}.conf
 Patch0:		%{name}-httpd_user.patch
 URL:		http://www.bugzilla.org/
