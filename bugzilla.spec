@@ -2,11 +2,12 @@
 Summary:	Bug tracking system
 Summary(pl):	System ¶ledzenia b³êdów
 Name:		bugzilla
-Version:	2.16.2
-Release:	0.2
+Version:	2.17.4
+Release:	0.1
 License:	GPL
 Group:		Aplications/WWW
 Source0:	http://ftp.mozilla.org/pub/webtools/%{name}-%{version}.tar.gz
+# Source0-md5:	c5b66336cd5666a2b995ed5ead050edc
 Source1:	%{name}.conf
 Patch0:		%{name}-httpd_user.patch
 URL:		http://www.bugzilla.org/
@@ -15,7 +16,7 @@ Requires(post,postun):	apache
 Requires(post,postun):	grep
 Requires(postun):	fileutils
 Requires:	apache
-Requires:	mysql
+Requires:	mysql >= 3.23.41
 Requires:	perl-DBD-mysql
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -40,10 +41,10 @@ perl -pi -e 's@#\!/usr/bonsaitools/bin/perl@#\!/usr/bin/perl@' *cgi *pl Bug.pm p
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/etc/httpd,%{_bugzilladir}/{css,docs/{html,images},template},/var/lib/%{name}/{data,graphs}}
 
-install *.{cgi,gif,html,jpg,js,pl,pm,txt} processmail syncshadowdb $RPM_BUILD_ROOT%{_bugzilladir}
+install *.{cgi,gif,html,jpg,js,pl,pm,txt} $RPM_BUILD_ROOT%{_bugzilladir}
 install css/*.css $RPM_BUILD_ROOT%{_bugzilladir}/css
 install docs/html/*.html $RPM_BUILD_ROOT%{_bugzilladir}/docs/html
-install docs/images/*.{gif,jpg} $RPM_BUILD_ROOT%{_bugzilladir}/docs/images
+install docs/images/*.gif $RPM_BUILD_ROOT%{_bugzilladir}/docs/images
 
 cp -r template/en $RPM_BUILD_ROOT%{_bugzilladir}/template
 find -name CVS -type d | xargs rm -rf
@@ -97,8 +98,6 @@ fi
 %{_bugzilladir}/*.gif
 %{_bugzilladir}/*.jpg
 %{_bugzilladir}/*.txt
-%{_bugzilladir}/processmail
-%{_bugzilladir}/syncshadowdb
 %dir /var/lib/%{name}
 %attr(770,root,http) /var/lib/%{name}/data
 %attr(775,root,http) /var/lib/%{name}/graphs
