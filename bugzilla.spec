@@ -8,7 +8,7 @@ Summary:	Bug tracking system
 Summary(pl):	System ¶ledzenia b³êdów
 Name:		bugzilla
 Version:	2.18
-Release:	0.%{_rcver}.2
+Release:	0.%{_rcver}.3
 License:	GPL
 Group:		Applications/WWW
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}%{_rcver}.tar.gz
@@ -40,6 +40,7 @@ System ¶ledzenia b³êdów.
 %prep
 %setup -q -n %{name}-%{version}%{_rcver}
 %patch0 -p1
+%patch1 -p1
 
 %build
 perl -pi -e 's@#\!%{_prefix}/bonsaitools/bin/perl@#\!%{_bindir}/perl@' *cgi *pl Bug.pm processmail syncshadowdb
