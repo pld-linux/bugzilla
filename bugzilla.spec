@@ -1,15 +1,18 @@
 # TODO:
 # - SECURITY: http://securitytracker.com/alerts/2004/Jul/1010681.html
+
+%define _rcver rc2
+
 %include	/usr/lib/rpm/macros.perl
 Summary:	Bug tracking system
 Summary(pl):	System ¶ledzenia b³êdów
 Name:		bugzilla
-Version:	2.17.7
-Release:	0.1
+Version:	2.18
+Release:	0.%{_rcver}.1
 License:	GPL
-Group:		Aplications/WWW
-Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}.tar.gz
-# Source0-md5:	b5e34e50e3eda5647bdca223fb6fd797
+Group:		Applications/WWW
+Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}%{_rcver}.tar.gz
+# Source0-md5:	aadd24a0177a7b44ef7b2785c0d6740f
 Source1:	%{name}.conf
 Patch0:		%{name}-httpd_user.patch
 URL:		http://www.bugzilla.org/
@@ -20,6 +23,7 @@ Requires(postun):	fileutils
 Requires:	apache
 Requires:	mysql >= 3.23.41
 Requires:	perl-DBD-mysql
+Requires:	perl-DBI >= 1.36
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_noautoreq	'perl(localconfig)' 'perl(data::params)' 'perl(data::versioncache)'
@@ -33,15 +37,15 @@ Bug tracking system.
 System ¶ledzenia b³êdów.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}%{_rcver}
 %patch0 -p1
 
 %build
-perl -pi -e 's@#\!/usr/bonsaitools/bin/perl@#\!/usr/bin/perl@' *cgi *pl Bug.pm processmail syncshadowdb
+perl -pi -e 's@#\!%{_prefix}/bonsaitools/bin/perl@#\!%{_bindir}/perl@' *cgi *pl Bug.pm processmail syncshadowdb
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/etc/httpd,%{_bugzilladir}/{Bugzilla/{Auth,Template/Plugin},css,docs/{html,images},template},/var/lib/%{name}/{data,graphs}}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/httpd,%{_bugzilladir}/{Bugzilla/{Auth,Template/Plugin},css,docs/{html,images},template},/var/lib/%{name}/{data,graphs}}
 
 install *.{cgi,gif,html,jpg,js,pl,pm,txt} $RPM_BUILD_ROOT%{_bugzilladir}
 install Bugzilla/*.pm $RPM_BUILD_ROOT%{_bugzilladir}/Bugzilla
@@ -57,7 +61,7 @@ find -name CVS -type d | xargs rm -rf
 ln -s /var/lib/%{name}/data $RPM_BUILD_ROOT%{_bugzilladir}
 ln -s /var/lib/%{name}/graphs $RPM_BUILD_ROOT%{_bugzilladir}
 
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/httpd/%{name}.conf
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd/%{name}.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -92,7 +96,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc README UPGRADING UPGRADING-pre-2.8 docs/rel_notes.txt docs/txt/Bugzilla-Guide.txt
-%config(noreplace) %verify(not size mtime md5) /etc/httpd/%{name}.conf
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/httpd/%{name}.conf
 %dir %{_bugzilladir}
 %{_bugzilladir}/css
 %{_bugzilladir}/docs
