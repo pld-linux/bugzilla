@@ -7,7 +7,7 @@ Release:	0.1
 License:	GPL
 Group:		Aplications/WWW
 Source0:	http://ftp.mozilla.org/pub/webtools/%{name}-%{version}.tar.gz
-# Source0-md5:	c5b66336cd5666a2b995ed5ead050edc
+# Source0-md5:	95088c973b85d5afd35e977d51f6757c
 Source1:	%{name}.conf
 Patch0:		%{name}-httpd_user.patch
 URL:		http://www.bugzilla.org/
