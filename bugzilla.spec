@@ -1,3 +1,5 @@
+# TODO:
+# - SECURITY: http://securitytracker.com/alerts/2004/Jul/1010681.html
 %include	/usr/lib/rpm/macros.perl
 Summary:	Bug tracking system
 Summary(pl):	System ¶ledzenia b³êdów
