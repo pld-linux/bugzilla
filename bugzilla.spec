@@ -5,22 +5,18 @@ Name:		bugzilla
 Version:	2.16.2
 Release:	0.2
 License:	GPL
-Group:		Web/Aplications
+Group:		Aplications/WWW
 Source0:	http://ftp.mozilla.org/pub/webtools/%{name}-%{version}.tar.gz
 Source1:	%{name}.conf
 Patch0:		%{name}-httpd_user.patch
 URL:		http://www.bugzilla.org/
+BuildRequires:	perl
+Requires(post,postun):	apache
+Requires(post,postun):	grep
+Requires(postun):	fileutils
+Requires:	apache
 Requires:	mysql
 Requires:	perl-DBD-mysql
-REquires:	webserver
-BuildRequires:	perl
-#PreReq:		-
-#Requires(pre,post):	-
-#Requires(preun):	-
-#Requires(postun):	-
-#Provides:	-
-#Obsoletes:	-
-#Conflicts:	-
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_noautoreq	'perl(localconfig)' 'perl(data::params)' 'perl(data::versioncache)'
@@ -28,10 +24,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_bugzilladir	/usr/share/bugzilla
 
 %description
-blah
+Bug tracking system.
 
 %description -l pl
-blah
+System ¶ledzenia b³êdów.
 
 %prep
 %setup -q
