@@ -2,12 +2,12 @@
 Summary:	Bug tracking system
 Summary(pl):	System ¶ledzenia b³êdów
 Name:		bugzilla
-Version:	2.17.6
+Version:	2.17.7
 Release:	0.1
 License:	GPL
 Group:		Aplications/WWW
-Source0:	http://ftp.mozilla.org/pub/webtools/%{name}-%{version}.tar.gz
-# Source0-md5:	1fd6bdcd18838d54f54b30eeaa7d14ce
+Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/bugzilla-2.17.7.tar.gz
+# Source0-md5:	b5e34e50e3eda5647bdca223fb6fd797
 Source1:	%{name}.conf
 Patch0:		%{name}-httpd_user.patch
 URL:		http://www.bugzilla.org/
@@ -39,9 +39,12 @@ perl -pi -e 's@#\!/usr/bonsaitools/bin/perl@#\!/usr/bin/perl@' *cgi *pl Bug.pm p
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/etc/httpd,%{_bugzilladir}/{css,docs/{html,images},template},/var/lib/%{name}/{data,graphs}}
+install -d $RPM_BUILD_ROOT{/etc/httpd,%{_bugzilladir}/{Bugzilla/{Auth,Template/Plugin},css,docs/{html,images},template},/var/lib/%{name}/{data,graphs}}
 
 install *.{cgi,gif,html,jpg,js,pl,pm,txt} $RPM_BUILD_ROOT%{_bugzilladir}
+install Bugzilla/*.pm $RPM_BUILD_ROOT%{_bugzilladir}/Bugzilla
+install Bugzilla/Auth/*.pm $RPM_BUILD_ROOT%{_bugzilladir}/Bugzilla/Auth
+install Bugzilla/Template/Plugin/*.pm $RPM_BUILD_ROOT%{_bugzilladir}/Bugzilla/Template/Plugin
 install css/*.css $RPM_BUILD_ROOT%{_bugzilladir}/css
 install docs/html/*.html $RPM_BUILD_ROOT%{_bugzilladir}/docs/html
 install docs/images/*.gif $RPM_BUILD_ROOT%{_bugzilladir}/docs/images
@@ -52,30 +55,35 @@ find -name CVS -type d | xargs rm -rf
 ln -s /var/lib/%{name}/data $RPM_BUILD_ROOT%{_bugzilladir}
 ln -s /var/lib/%{name}/graphs $RPM_BUILD_ROOT%{_bugzilladir}
 
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/httpd
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/httpd/%{name}.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
-if [ "$1" = "1" ]; then
-	if [ -f /etc/httpd/httpd.conf ] && \
-	    ! grep -q "^Include.*/bugzilla.conf" /etc/httpd/httpd.conf; then
+if [ -f /etc/httpd/httpd.conf ] && \
+	! grep -q "^Include.*/bugzilla.conf" /etc/httpd/httpd.conf; then
 		echo "Include /etc/httpd/bugzilla.conf" >> /etc/httpd/httpd.conf
-	fi
-	if [ -f /var/lock/subsys/httpd ]; then
-		/etc/rc.d/init.d/httpd restart 1>&2
-	fi
+fi
+if [ -d /etc/httpd/httpd.conf ]; then
+	mv -f /etc/httpd/%{name}.conf /etc/httpd/httpd.conf/99_%{name}.conf
+fi
+if [ -f /var/lock/subsys/httpd ]; then
+	/usr/sbin/apachectl restart 1>&2
 fi
 
 %postun
 if [ "$1" = "0" ]; then
 	umask 027
-	grep -E -v "^Include.*bugzilla.conf" /etc/httpd/httpd.conf > \
-		/etc/httpd/httpd.conf.tmp
-	mv -f /etc/httpd/httpd.conf.tmp /etc/httpd/httpd.conf
-	if [ -f /var/lock/subsys/httpd ]; then
-	        /etc/rc.d/init.d/httpd restart 1>&2
+	if [ -d /etc/httpd/httpd.conf ]; then
+		rm -f /etc/httpd/httpd.conf/99_%{name}.conf
+	else
+		grep -v "^Include.*bugzilla.conf" /etc/httpd/httpd.conf/10_httpd.conf > \
+			/etc/httpd/httpd.conf.tmp
+		mv -f /etc/httpd/httpd.conf.tmp /etc/httpd/httpd.conf
+		if [ -f /var/lock/subsys/httpd ]; then
+			/usr/sbin/apachectl restart 1>&2
+		fi
 	fi
 fi
 
@@ -89,6 +97,7 @@ fi
 %{_bugzilladir}/template
 %{_bugzilladir}/data
 %{_bugzilladir}/graphs
+%{_bugzilladir}/Bugzilla
 %attr(755,root,root) %{_bugzilladir}/*.cgi
 %attr(640,root,http) %config(noreplace) %verify(not size mtime md5) %{_bugzilladir}/globals.pl
 %{_bugzilladir}/[!g]*.pl
