@@ -1,5 +1,6 @@
 # TODO:
 # - SECURITY: http://securitytracker.com/alerts/2004/Jul/1010681.html
+# - SECURITY: http://security.gentoo.org/glsa/glsa-200507-12.xml
 
 %define _rcver rc2
 
