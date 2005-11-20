@@ -20,7 +20,7 @@ Requires:	mysql >= 3.23.41
 Requires:	perl-DBD-mysql
 Requires:	perl-DBI >= 1.36
 Requires:	smtpdaemon
-Conflicts:	apache < 1.3.33-2
+Conflicts:	apache1 < 1.3.33-2
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
