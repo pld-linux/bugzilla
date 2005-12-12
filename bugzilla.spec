@@ -15,11 +15,11 @@ Source1:	%{name}.conf
 Patch0:		%{name}-httpd_user.patch
 Patch1:		%{name}-chdir.patch
 URL:		http://www.bugzilla.org/
-Requires:	webserver = apache
 Requires:	mysql >= 3.23.41
 Requires:	perl-DBD-mysql
 Requires:	perl-DBI >= 1.36
 Requires:	smtpdaemon
+Requires:	webserver = apache
 Conflicts:	apache1 < 1.3.33-2
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -121,7 +121,7 @@ fi
 %{_bugzilladir}/skins
 %{_bugzilladir}/template
 %attr(755,root,root) %{_bugzilladir}/*.cgi
-%attr(640,root,http) %config(noreplace) %verify(not size mtime md5) %{_bugzilladir}/globals.pl
+%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_bugzilladir}/globals.pl
 %{_bugzilladir}/[!g]*.pl
 %{_bugzilladir}/*.dtd
 %{_bugzilladir}/*.html
