@@ -6,7 +6,7 @@ Summary:	Bug tracking system
 Summary(pl):	System ¶ledzenia b³êdów
 Name:		bugzilla
 Version:	2.20
-Release:	0.4
+Release:	0.5
 License:	GPL
 Group:		Applications/WWW
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}.tar.gz
@@ -16,19 +16,19 @@ Patch0:		%{name}-httpd_user.patch
 Patch1:		%{name}-chdir.patch
 URL:		http://www.bugzilla.org/
 BuildRequires:	rpmbuild(macros) >= 1.268
-Requires:	mysql >= 3.23.41
 Requires:	perl-DBD-mysql
 Requires:	perl-DBI >= 1.36
 Requires:	smtpdaemon
-Requires:	webserver = apache
-Conflicts:	apache1 < 1.3.33-2
+Requires:	webapps
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%define		_webapps	/etc/webapps
+%define		_webapp		%{name}
+%define		_sysconfdir	%{_webapps}/%{_webapp}
+%define		_appdir		%{_datadir}/%{_webapp}
 # see TODO
 %define		_noautoreq		'perl(DBD::Pg)'
-%define		_bugzilladir	%{_datadir}/bugzilla
-%define		_sysconfdir		/etc/%{name}
 
 %description
 Bugzilla is the Bug-Tracking System from the Mozilla project.
@@ -46,83 +46,59 @@ find '(' -name '*~' -o -name '*.orig' -o -name '.cvsignore' ')' | xargs -r rm -v
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_bugzilladir}/Bugzilla,/var/lib/%{name}/{data,graphs}}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_appdir}/Bugzilla,/var/lib/%{name}/{data,graphs}}
 
-install *.{cgi,html,jpg,js,pl,pm,txt,dtd,xul} $RPM_BUILD_ROOT%{_bugzilladir}
-cp -a Bugzilla $RPM_BUILD_ROOT%{_bugzilladir}
-cp -a images js skins template $RPM_BUILD_ROOT%{_bugzilladir}
+install *.{cgi,html,jpg,js,pl,pm,txt,dtd,xul} $RPM_BUILD_ROOT%{_appdir}
+cp -a Bugzilla $RPM_BUILD_ROOT%{_appdir}
+cp -a images js skins template $RPM_BUILD_ROOT%{_appdir}
 
-ln -s /var/lib/%{name}/data $RPM_BUILD_ROOT%{_bugzilladir}
-ln -s /var/lib/%{name}/graphs $RPM_BUILD_ROOT%{_bugzilladir}
+ln -s /var/lib/%{name}/data $RPM_BUILD_ROOT%{_appdir}
+ln -s /var/lib/%{name}/graphs $RPM_BUILD_ROOT%{_appdir}
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%triggerpostun -- %{name} < 2.20
-# migrate from old config location (only apache2, as there was no apache1 support)
-if [ -f /etc/httpd/%{name}.conf.rpmsave ]; then
-	cp -f %{_sysconfdir}/apache.conf{,.rpmnew}
-	mv -f /etc/httpd/%{name}.conf.rpmsave %{_sysconfdir}/apache.conf
-	%service -q httpd reload
-fi
+%triggerin -- apache1
+%webapp_register apache %{_webapp}
 
-# nuke very-old config location (this mostly for Ra)
-if [ ! -d /etc/httpd/httpd.conf ]; then
-	sed -i -e "/^Include.*%{name}.conf/d" /etc/httpd/httpd.conf
-	%service -q httpd reload
-fi
+%triggerun -- apache1
+%webapp_unregister apache %{_webapp}
 
-# place new config location, as trigger puts config only on first install, do it here.
-# apache1
-if [ -d /etc/apache/conf.d ]; then
-	ln -sf %{_sysconfdir}/apache.conf /etc/apache/conf.d/99_%{name}.conf
-	%service -q apache reload
-fi
-# apache2
-if [ -d /etc/httpd/httpd.conf ]; then
-	ln -sf %{_sysconfdir}/apache.conf /etc/httpd/httpd.conf/99_%{name}.conf
-	%service -q httpd reload
-fi
+%triggerin -- apache < 2.2.0, apache-base
+%webapp_register httpd %{_webapp}
 
-%triggerin -- apache1 >= 1.3.33-2
-%apache_config_install -v 1 -c %{_sysconfdir}/apache.conf
-
-%triggerun -- apache1 >= 1.3.33-2
-%apache_config_uninstall -v 1
-
-%triggerin -- apache >= 2.0.0
-%apache_config_install -v 2 -c %{_sysconfdir}/apache.conf
-
-%triggerun -- apache >= 2.0.0
-%apache_config_uninstall -v 2
+%triggerun -- apache < 2.2.0, apache-base
+%webapp_unregister httpd %{_webapp}
 
 %files
 %defattr(644,root,root,755)
 %doc QUICKSTART README UPGRADING UPGRADING-pre-2.8 docs/rel_notes.txt docs/txt/Bugzilla-Guide.txt
 %doc contrib docs/html
-%attr(750,root,http) %dir %{_sysconfdir}
+%dir %attr(750,root,http) %{_sysconfdir}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf
 
-%dir %{_bugzilladir}
-%{_bugzilladir}/Bugzilla
-%{_bugzilladir}/data
-%{_bugzilladir}/graphs
-%{_bugzilladir}/images
-%{_bugzilladir}/js
-%{_bugzilladir}/skins
-%{_bugzilladir}/template
-%attr(755,root,root) %{_bugzilladir}/*.cgi
-%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_bugzilladir}/globals.pl
-%{_bugzilladir}/[!g]*.pl
-%{_bugzilladir}/*.dtd
-%{_bugzilladir}/*.html
-%{_bugzilladir}/*.js
-%{_bugzilladir}/*.jpg
-%{_bugzilladir}/*.pm
-%{_bugzilladir}/*.txt
-%{_bugzilladir}/*.xul
+%dir %{_appdir}
+%{_appdir}/Bugzilla
+%{_appdir}/data
+%{_appdir}/graphs
+%{_appdir}/images
+%{_appdir}/js
+%{_appdir}/skins
+%{_appdir}/template
+%attr(755,root,root) %{_appdir}/*.cgi
+%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_appdir}/globals.pl
+%{_appdir}/[!g]*.pl
+%{_appdir}/*.dtd
+%{_appdir}/*.html
+%{_appdir}/*.js
+%{_appdir}/*.jpg
+%{_appdir}/*.pm
+%{_appdir}/*.txt
+%{_appdir}/*.xul
 %dir /var/lib/%{name}
 %attr(770,root,http) /var/lib/%{name}/data
 %attr(775,root,http) /var/lib/%{name}/graphs
