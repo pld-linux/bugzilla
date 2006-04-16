@@ -15,6 +15,7 @@ Source1:	%{name}.conf
 Patch0:		%{name}-httpd_user.patch
 Patch1:		%{name}-chdir.patch
 URL:		http://www.bugzilla.org/
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	mysql >= 3.23.41
 Requires:	perl-DBD-mysql
 Requires:	perl-DBI >= 1.36
@@ -64,33 +65,25 @@ rm -rf $RPM_BUILD_ROOT
 if [ -f /etc/httpd/%{name}.conf.rpmsave ]; then
 	cp -f %{_sysconfdir}/apache.conf{,.rpmnew}
 	mv -f /etc/httpd/%{name}.conf.rpmsave %{_sysconfdir}/apache.conf
-	if [ -f /var/lock/subsys/httpd ]; then
-		/etc/rc.d/init.d/httpd reload 1>&2
-	fi
+	%service -q httpd reload
 fi
 
 # nuke very-old config location (this mostly for Ra)
 if [ ! -d /etc/httpd/httpd.conf ]; then
 	sed -i -e "/^Include.*%{name}.conf/d" /etc/httpd/httpd.conf
-	if [ -f /var/lock/subsys/httpd ]; then
-		/etc/rc.d/init.d/httpd reload 1>&2
-	fi
+	%service -q httpd reload
 fi
 
 # place new config location, as trigger puts config only on first install, do it here.
 # apache1
 if [ -d /etc/apache/conf.d ]; then
 	ln -sf %{_sysconfdir}/apache.conf /etc/apache/conf.d/99_%{name}.conf
-	if [ -f /var/lock/subsys/apache ]; then
-		/etc/rc.d/init.d/apache reload 1>&2
-	fi
+	%service -q apache reload
 fi
 # apache2
 if [ -d /etc/httpd/httpd.conf ]; then
 	ln -sf %{_sysconfdir}/apache.conf /etc/httpd/httpd.conf/99_%{name}.conf
-	if [ -f /var/lock/subsys/httpd ]; then
-		/etc/rc.d/init.d/httpd reload 1>&2
-	fi
+	%service -q httpd reload
 fi
 
 %triggerin -- apache1 >= 1.3.33-2
