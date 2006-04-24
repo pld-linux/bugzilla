@@ -16,6 +16,7 @@ Source2:	%{name}-localconfig.pl
 Patch0:		%{name}-pld.patch
 URL:		http://www.bugzilla.org/
 BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	sed >= 4.0
 Requires:	perl-DBD-mysql
 Requires:	perl-DBI >= 1.36
 Requires:	perl-MailTools >= 1.67
