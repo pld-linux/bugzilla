@@ -6,18 +6,19 @@ Summary:	Bug tracking system
 Summary(pl):	System ¶ledzenia b³êdów
 Name:		bugzilla
 Version:	2.22
-Release:	0.1
+Release:	0.27
 License:	GPL
 Group:		Applications/WWW
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}.tar.gz
 # Source0-md5:	bbf2f1ec5607978d39855df104231973
 Source1:	%{name}.conf
-Patch0:		%{name}-httpd_user.patch
-Patch1:		%{name}-chdir.patch
+Source2:	%{name}-localconfig.pl
+Patch0:		%{name}-pld.patch
 URL:		http://www.bugzilla.org/
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	perl-DBD-mysql
 Requires:	perl-DBI >= 1.36
+Requires:	perl-MailTools >= 1.67
 Requires:	smtpdaemon
 Requires:	webapps
 BuildArch:	noarch
@@ -39,29 +40,45 @@ System ¶ledzenia b³êdów.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
+
+sed -i -e '
+s,use lib ".",use lib "%{_appdir}",
+s,use lib qw(.),use lib "%{_appdir}",
+' *.cgi
 
 find -name CVS -type d | xargs rm -rf
 find '(' -name '*~' -o -name '*.orig' -o -name '.cvsignore' ')' | xargs -r rm -v
 
+# won't package tests
+rm -f runtests.pl
+
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_appdir}/Bugzilla,/var/lib/%{name}/{data,graphs}}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_appdir}/htdocs,/var/lib/%{name}/{data,graphs}} \
+	$RPM_BUILD_ROOT%{perl_vendorlib}
 
-install *.{cgi,js,pl,pm,txt,dtd,xul} $RPM_BUILD_ROOT%{_appdir}
-cp -a Bugzilla $RPM_BUILD_ROOT%{_appdir}
-cp -a images js skins template $RPM_BUILD_ROOT%{_appdir}
+install *.pl $RPM_BUILD_ROOT%{_appdir}
+cp -a template $RPM_BUILD_ROOT%{_appdir}
+cp -a Bugzilla{,.pm} $RPM_BUILD_ROOT%{perl_vendorlib}
 
-ln -s /var/lib/%{name}/data $RPM_BUILD_ROOT%{_appdir}
-ln -s /var/lib/%{name}/graphs $RPM_BUILD_ROOT%{_appdir}
-mv $RPM_BUILD_ROOT%{_appdir}/globals.pl $RPM_BUILD_ROOT%{_sysconfdir}
-ln -s %{_sysconfdir}/globals.pl $RPM_BUILD_ROOT%{_appdir}/globals.pl
+install *.{cgi,js,txt,dtd,xul} $RPM_BUILD_ROOT%{_appdir}/htdocs
+cp -a images js skins $RPM_BUILD_ROOT%{_appdir}/htdocs
+
+ln -s /var/lib/%{name}/graphs $RPM_BUILD_ROOT%{_appdir}/htdocs
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/localconfig.pl
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post
+if [ "$1" = 1 ]; then
+%banner -e %{name} <<EOF
+If this is your first install create database and run checksetup.pl
+EOF
+fi
 
 %triggerin -- apache1
 %webapp_register apache %{_webapp}
@@ -84,21 +101,24 @@ rm -rf $RPM_BUILD_ROOT
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*.pl
 
+%{perl_vendorlib}/Bugzilla
+%{perl_vendorlib}/Bugzilla.pm
+
 %dir %{_appdir}
-%{_appdir}/Bugzilla
-%{_appdir}/data
-%{_appdir}/graphs
-%{_appdir}/images
-%{_appdir}/js
-%{_appdir}/skins
 %{_appdir}/template
-%{_appdir}/*.pl
-%{_appdir}/*.dtd
-%{_appdir}/*.js
-%{_appdir}/*.pm
-%{_appdir}/*.txt
-%{_appdir}/*.xul
-%attr(755,root,root) %{_appdir}/*.cgi
+%attr(755,root,root) %{_appdir}/*.pl
+
+%dir %{_appdir}/htdocs
+%{_appdir}/htdocs/*.dtd
+%{_appdir}/htdocs/*.js
+%{_appdir}/htdocs/*.txt
+%{_appdir}/htdocs/*.xul
+%{_appdir}/htdocs/graphs
+%{_appdir}/htdocs/images
+%{_appdir}/htdocs/js
+%{_appdir}/htdocs/skins
+%attr(755,root,root) %{_appdir}/htdocs/*.cgi
+
 %dir /var/lib/%{name}
 %attr(770,root,http) /var/lib/%{name}/data
-%attr(775,root,http) /var/lib/%{name}/graphs
+%attr(770,root,http) /var/lib/%{name}/graphs
