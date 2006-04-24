@@ -111,8 +111,8 @@
      }
  }
  
---- a/collectstats.pl~	2004-11-28 19:12:51.000000000 +0200
-+++ a/collectstats.pl	2005-01-21 08:57:30.975582527 +0200
+--- a/collectstats.pl	2005-01-21 08:57:30.975582527 +0200
++++ a/collectstats.pl	2006-04-24 23:04:25.847159729 +0300
 @@ -48,7 +48,7 @@
  if (chdir("graphs")) {
      unlink <./*.gif>;
@@ -122,6 +122,17 @@
  }
  
  GetVersionTable();
+@@ -96,8 +96,8 @@
+     trick_taint($perl);
+ 
+     # Generate a static RDF file containing the default view of the duplicates data.
+-    open(CGI, "$perl -T duplicates.cgi |")
+-        || die "can't fork duplicates.cgi: $!";
++    open(CGI, "$perl -T htdocs/duplicates.cgi |")
++        || die "can't fork htdocs/duplicates.cgi: $!";
+     open(RDF, ">$datadir/duplicates.tmp")
+         || die "can't write to $datadir/duplicates.tmp: $!";
+     my $headers_done = 0;
 --- ./checksetup.pl	2006-04-24 22:03:58.576110738 +0300
 +++ ./checksetup.pl	2006-04-24 22:09:50.783963305 +0300
 @@ -659,7 +659,7 @@
