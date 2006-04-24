@@ -1,5 +1,5 @@
 --- bugzilla-2.22/Bugzilla/Config.pm	2006-04-23 05:45:09.000000000 +0300
-+++ /home/glen/Config.pm	2006-04-24 02:50:00.901038343 +0300
++++ ./Config.pm	2006-04-24 02:50:00.901038343 +0300
 @@ -52,7 +52,7 @@
  # some point.
  
@@ -29,8 +29,8 @@
      $item =~ m#/([^/]+)\.pm$#;
      my $module = $1;
      next if ($module eq 'Common');
---- bugzilla-2.22/checksetup.pl	2006-04-24 21:50:03.587496933 +0300
-+++ bugzilla-2.22/checksetup.pl	2006-04-24 21:54:33.173506209 +0300
+--- ./checksetup.pl	2006-04-24 22:03:58.576110738 +0300
++++ ./checksetup.pl	2006-04-24 22:09:50.783963305 +0300
 @@ -596,7 +596,7 @@
  
  my $webservergroup_default;
@@ -76,23 +76,23 @@
          fixPerms("$datadir/duplicates", $<, $webservergid, 027, 1);
          fixPerms("$datadir/mining", $<, $webservergid, 027, 1);
          fixPerms("$datadir/template", $<, $webservergid, 007, 1); # webserver will write to these
-@@ -1377,21 +1368,15 @@
+@@ -1377,21 +1368,11 @@
          fixPerms($webdotdir, $<, $webservergid, 007, 1);
          fixPerms("$webdotdir/.htaccess", $<, $webservergid, 027);
          fixPerms("$datadir/params", $<, $webservergid, 017);
 -        fixPerms('*', $<, $webservergid, 027);
 -        fixPerms('Bugzilla', $<, $webservergid, 027, 1);
-         fixPerms($templatedir, $<, $webservergid, 027, 1);
+-        fixPerms($templatedir, $<, $webservergid, 027, 1);
 -        fixPerms('images', $<, $webservergid, 027, 1);
 -        fixPerms('css', $<, $webservergid, 027, 1);
 -        fixPerms('skins', $<, $webservergid, 027, 1);
 -        fixPerms('js', $<, $webservergid, 027, 1);
-         chmod 0644, 'globals.pl';
+-        chmod 0644, 'globals.pl';
          
          # Don't use fixPerms here, because it won't change perms 
          # on the directory unless it's using recursion
-         chown $<, $webservergid, $datadir;
-         chmod 0771, $datadir;
+-        chown $<, $webservergid, $datadir;
+-        chmod 0771, $datadir;
 -        chown $<, $webservergid, 'graphs';
 -        chmod 0770, 'graphs';
 +        chown $<, $webservergid, '/var/lib/bugzilla/graphs';
@@ -100,7 +100,7 @@
      } else {
          # get current gid from $( list
          my $gid = (split " ", $()[0];
-@@ -1416,8 +1401,8 @@
+@@ -1416,8 +1397,8 @@
          # on the directory unless it's using recursion
          chown $<, $gid, $datadir;
          chmod 0777, $datadir;
@@ -122,8 +122,8 @@
  }
  
  GetVersionTable();
---- bugzilla-2.22/checksetup.pl~	2006-04-24 21:51:31.889465205 +0300
-+++ bugzilla-2.22/checksetup.pl	2006-04-24 21:54:33.173506209 +0300
+--- ./checksetup.pl	2006-04-24 22:03:58.576110738 +0300
++++ ./checksetup.pl	2006-04-24 22:09:50.783963305 +0300
 @@ -659,7 +659,7 @@
  # <Directory> blocks.)
  # If this is set to 1, Bugzilla will create these files if they don't exist.
