@@ -6,13 +6,14 @@ Summary:	Bug tracking system
 Summary(pl):	System ¶ledzenia b³êdów
 Name:		bugzilla
 Version:	2.22
-Release:	0.27
+Release:	0.31
 License:	GPL
 Group:		Applications/WWW
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}.tar.gz
 # Source0-md5:	bbf2f1ec5607978d39855df104231973
 Source1:	%{name}.conf
 Source2:	%{name}-localconfig.pl
+Source3:	%{name}.cron
 Patch0:		%{name}-pld.patch
 URL:		http://www.bugzilla.org/
 BuildRequires:	rpmbuild(macros) >= 1.268
@@ -70,14 +71,27 @@ ln -s /var/lib/%{name}/graphs $RPM_BUILD_ROOT%{_appdir}/htdocs
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/localconfig.pl
+install -D %{SOURCE3} $RPM_BUILD_ROOT/etc/cron.daily/bugzilla
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
 if [ "$1" = 1 ]; then
-%banner -e %{name} <<EOF
-If this is your first install create database and run checksetup.pl
+# shamelessly stolen from gentoo
+%banner -e %{name} <<'EOF'
+0. Bugzilla has been installed into %{_appdir}
+
+1. To finish the installation, please read
+   http://www.bugzilla.org/docs/%{version}/html/installation.html
+   You will need to run %{_appdir}/checksetup.pl
+
+   IMPORTANT: If you have customized the values in your
+   Status/Resolution field, you must edit checksetup.pl BEFORE YOU RUN
+   IT. Please see the Release Notes for more details.
+
+2. Please read the Release Notes, especially if you are upgrading:
+   http://www.bugzilla.org/releases/%{version}/release-notes.html
 EOF
 fi
 
@@ -101,6 +115,8 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*.pl
+
+%attr(755,root,root) /etc/cron.daily/bugzilla
 
 %{perl_vendorlib}/Bugzilla
 %{perl_vendorlib}/Bugzilla.pm
