@@ -29,8 +29,8 @@
      $item =~ m#/([^/]+)\.pm$#;
      my $module = $1;
      next if ($module eq 'Common');
---- bugzilla-2.18rc2/checksetup.pl	2004-09-14 18:05:38.062918336 +0200
-+++ bugzilla-2.22/checksetup.pl	2006-04-24 21:50:03.587496933 +0300
+--- bugzilla-2.22/checksetup.pl	2006-04-24 21:50:03.587496933 +0300
++++ bugzilla-2.22/checksetup.pl	2006-04-24 21:54:33.173506209 +0300
 @@ -596,7 +596,7 @@
  
  my $webservergroup_default;
@@ -122,3 +122,14 @@
  }
  
  GetVersionTable();
+--- bugzilla-2.22/checksetup.pl~	2006-04-24 21:51:31.889465205 +0300
++++ bugzilla-2.22/checksetup.pl	2006-04-24 21:54:33.173506209 +0300
+@@ -659,7 +659,7 @@
+ # <Directory> blocks.)
+ # If this is set to 1, Bugzilla will create these files if they don't exist.
+ # If this is set to 0, Bugzilla will not create these files.
+-$create_htaccess = 1;
++$create_htaccess = 0;
+ END
+ 
+ my $webservergroup_default;
