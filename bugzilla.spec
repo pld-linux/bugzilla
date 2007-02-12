@@ -3,7 +3,7 @@
 # - fill brr and add autodeps bcond
 %include	/usr/lib/rpm/macros.perl
 Summary:	Bug tracking system
-Summary(pl.UTF-8):   System śledzenia błędów
+Summary(pl.UTF-8):	System śledzenia błędów
 Name:		bugzilla
 Version:	2.22.1
 Release:	0.32
