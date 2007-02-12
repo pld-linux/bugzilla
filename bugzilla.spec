@@ -3,7 +3,7 @@
 # - fill brr and add autodeps bcond
 %include	/usr/lib/rpm/macros.perl
 Summary:	Bug tracking system
-Summary(pl):	System ¶ledzenia b³êdów
+Summary(pl.UTF-8):   System Å›ledzenia bÅ‚Ä™dÃ³w
 Name:		bugzilla
 Version:	2.22.1
 Release:	0.32
@@ -36,8 +36,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 Bugzilla is the Bug-Tracking System from the Mozilla project.
 
-%description -l pl
-System ¶ledzenia b³êdów.
+%description -l pl.UTF-8
+System Å›ledzenia bÅ‚Ä™dÃ³w.
 
 %prep
 %setup -q
