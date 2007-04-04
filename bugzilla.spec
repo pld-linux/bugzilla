@@ -5,17 +5,18 @@
 Summary:	Bug tracking system
 Summary(pl.UTF-8):	System śledzenia błędów
 Name:		bugzilla
-Version:	2.22.1
-Release:	0.32
+Version:	2.22.2
+Release:	0.1
 License:	GPL
 Group:		Applications/WWW
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}.tar.gz
-# Source0-md5:	d52e2818441f3c2a5caeddf6c40b9f00
+# Source0-md5:	fb7fdcaacf5efad6f3bd5a1a810c467f
 Source1:	%{name}.conf
 Source2:	%{name}-localconfig.pl
 Source3:	%{name}.cron
 Patch0:		%{name}-pld.patch
 URL:		http://www.bugzilla.org/
+BuildRequires:	rpm-perlprov >= 4.1-13
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	sed >= 4.0
 Requires:	perl-DBD-mysql
