@@ -1,14 +1,14 @@
---- bugzilla-2.22/Bugzilla/Config.pm	2006-04-23 05:45:09.000000000 +0300
-+++ ./Config.pm	2006-04-24 02:50:00.901038343 +0300
-@@ -52,7 +52,7 @@
+--- bugzilla-2.22/Bugzilla/Config.pm	2006-04-24 02:50:00.901038343 +0300
++++ bugzilla-2.22.2/Bugzilla/Config.pm	2007-04-04 08:59:05.403817641 +0300
+@@ -53,7 +53,7 @@
  # some point.
  
  # constant paths
 -our $libpath = '.';
 +our $libpath = '/usr/share/bugzilla';
- our $templatedir = "$libpath/template";
  
- # variable paths
+ # importxml.pl, when run by a mail daemon, sets the bugzilla path explicitly.
+ # This then mucks it up, so if we are coming from importxml.pl, set $libpath
 @@ -64,8 +64,8 @@
      $localconfig = "$libpath/localconfig.$project";
      $datadir = "$libpath/data/$project";
