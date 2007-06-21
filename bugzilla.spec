@@ -1,16 +1,18 @@
 # TODO
 # - Split DB packages for mysql/pgsql
 # - fill brr and add autodeps bcond
+%define		_rc		rc1
+%define		_rel	0.2
 %include	/usr/lib/rpm/macros.perl
 Summary:	Bug tracking system
 Summary(pl.UTF-8):	System śledzenia błędów
 Name:		bugzilla
-Version:	2.22.2
-Release:	0.1
+Version:	3.0
+Release:	0.%{_rc}.%{_rel}
 License:	GPL
 Group:		Applications/WWW
-Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}.tar.gz
-# Source0-md5:	fb7fdcaacf5efad6f3bd5a1a810c467f
+Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}%{_rc}.tar.gz
+# Source0-md5:	638dc6ef374874806f3388c9bf24c802
 Source1:	%{name}.conf
 Source2:	%{name}-localconfig.pl
 Source3:	%{name}.cron
@@ -20,7 +22,9 @@ BuildRequires:	rpm-perlprov >= 4.1-13
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	sed >= 4.0
 Requires:	perl-DBD-mysql
-Requires:	perl-DBI >= 1.36
+Requires:	perl-DBI >= 1.41
+Requires:	perl(Email::Send) >= 2.00
+Requires:	perl(Email::MIME::Modifier)
 Requires:	perl-MailTools >= 1.67
 Requires:	smtpdaemon
 Requires:	webapps
@@ -32,7 +36,16 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sysconfdir	%{_webapps}/%{_webapp}
 %define		_appdir		%{_datadir}/%{_webapp}
 # Don't enforce DBD driver and exclude optional packages according to release notes
-%define		_noautoreq		'perl(DBD::*)' perl(Chart::Base) perl(GD) perl(GD::Graph) perl(GD::Text::Align) perl(Net::LDAP) perl(PatchReader) perl(XML::Twig) perl(Image::Magick)
+%define		_noautoreq		'perl(DBD::.*)' perl(Chart::Base) perl(GD) perl(GD::Graph) perl(GD::Text::Align) perl(Net::LDAP) perl(PatchReader) perl(XML::Twig) perl(Image::Magick)
+
+#D perl-Apache-DBI-1.01-1, perl-AppConfig-1.56-2, perl-BSD-Resource-1.28-1, perl-Class-Inspector-1.16-1,
+#D perl-DBD-Pg-1.49-1, perl-Data-Flow-0.09-2, perl-Email-Abstract-2.13-1, perl-Email-Address-1.86-1,
+#D perl-Email-MIME-1.85-1, perl-Email-MIME-Attachment-Stripper-1.3-1, perl-Email-MIME-ContentType-1.0-1,
+#D perl-Email-MIME-Creator-1.45-1, perl-Email-MIME-Encodings-1.3-2, perl-Email-MIME-Modifier-1.43-1,
+#D perl-Email-MessageID-1.35-1, perl-Email-Reply-1.1-1, perl-Email-Send-1.46-1, perl-Email-Simple-1.96-1,
+#D perl-Email-Simple-Creator-1.41-1, perl-IO-All-0.33-2, perl-IO-String-1.08-1, perl-Module-Pluggable-3.1-4,
+#D perl-Return-Value-1.28-1, perl-Spiffy-0.30-1, perl-Template-Toolkit-2.15-1, perl-mixin-0.04-1, perl-mod_perl-2.0.3-2
+
 
 %description
 Bugzilla is the Bug-Tracking System from the Mozilla project.
@@ -41,7 +54,7 @@ Bugzilla is the Bug-Tracking System from the Mozilla project.
 System śledzenia błędów.
 
 %prep
-%setup -q
+%setup -q %{?_rc:-n %{name}-%{version}%{_rc}}
 %patch0 -p1
 
 sed -i -e '
