@@ -20,3 +20,38 @@
      open(RDF, ">$datadir/duplicates.tmp")
          || die "can't write to $datadir/duplicates.tmp: $!";
      my $headers_done = 0;
+--- bugzilla-3.0/Bugzilla/Constants.pm~	2007-05-10 01:47:17.000000000 +0300
++++ bugzilla-3.0/Bugzilla/Constants.pm	2007-06-21 23:57:48.044744852 +0300
+@@ -407,10 +407,10 @@
+     my ($project, $localconfig, $datadir);
+     if ($ENV{'PROJECT'} && $ENV{'PROJECT'} =~ /^(\w+)$/) {
+         $project = $1;
+-        $localconfig = "localconfig.$project";
++        $localconfig = "localconfig.$project.pl";
+         $datadir = "data/$project";
+     } else {
+-        $localconfig = "localconfig";
++        $localconfig = "localconfig.pl";
+         $datadir = "data";
+     }
+ 
+@@ -420,13 +420,13 @@
+         'libpath'     => $libpath,
+         # If you put the libraries in a different location than the CGIs,
+         # make sure this still points to the CGIs.
+-        'cgi_path'    => $libpath,
+-        'templatedir' => "$libpath/template",
++        'cgi_path'    => '/usr/share/bugzilla/htdocs',
++        'templatedir' => "/usr/share/bugzilla/template",
+         'project'     => $project,
+-        'localconfig' => "$libpath/$localconfig",
+-        'datadir'     => "$libpath/$datadir",
+-        'attachdir'   => "$libpath/$datadir/attachments",
+-        'skinsdir'    => "$libpath/skins/contrib",
++        'localconfig' => "/etc/webapps/bugzilla/$localconfig",
++        'datadir'     => "/var/lib/bugzilla/$datadir",
++        'attachdir'   => "/var/lib/bugzilla/$datadir/attachments",
++        'skinsdir'    => "/usr/share/bugzilla/htdocs/skins/contrib",
+         # $webdotdir must be in the webtree somewhere. Even if you use a 
+         # local dot, we output images to there. Also, if $webdotdir is 
+         # not relative to the bugzilla root directory, you'll need to 
