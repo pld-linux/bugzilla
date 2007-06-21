@@ -6,14 +6,16 @@ Summary:	Bug tracking system
 Summary(pl.UTF-8):	System śledzenia błędów
 Name:		bugzilla
 Version:	3.0
-Release:	0.1
+Release:	0.4
 License:	GPL
 Group:		Applications/WWW
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}.tar.gz
 # Source0-md5:	9a56a47cdbfcb70a85ad73d923ac7e9d
-Source1:	%{name}.conf
-Source2:	%{name}-localconfig.pl
-Source3:	%{name}.cron
+Source1:	%{name}-skins.tar.bz2
+# Source1-md5:	4e6e8c2b65cab635975eff5ab318057b
+Source2:	%{name}.conf
+Source3:	%{name}-localconfig.pl
+Source4:	%{name}.cron
 Patch0:		%{name}-pld.patch
 URL:		http://www.bugzilla.org/
 BuildRequires:	rpm-perlprov >= 4.1-13
@@ -52,7 +54,7 @@ Bugzilla is the Bug-Tracking System from the Mozilla project.
 System śledzenia błędów.
 
 %prep
-%setup -q %{?_rc:-n %{name}-%{version}%{_rc}}
+%setup -q %{?_rc:-n %{name}-%{version}%{_rc}} -a1
 %patch0 -p1
 
 sed -i -e '
@@ -80,10 +82,10 @@ cp -a images js skins $RPM_BUILD_ROOT%{_appdir}/htdocs
 
 ln -s /var/lib/%{name}/graphs $RPM_BUILD_ROOT%{_appdir}/htdocs
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/localconfig.pl
-install -D %{SOURCE3} $RPM_BUILD_ROOT/etc/cron.daily/bugzilla
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
+install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/localconfig.pl
+install -D %{SOURCE4} $RPM_BUILD_ROOT/etc/cron.daily/bugzilla
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -135,9 +137,17 @@ fi
 
 %dir %{_appdir}
 %{_appdir}/template
-%attr(755,root,root) %{_appdir}/*.pl
+%attr(700,root,root) %{_appdir}/checksetup.pl
+%attr(755,root,root) %{_appdir}/collectstats.pl
+%attr(755,root,root) %{_appdir}/email_in.pl
+%attr(755,root,root) %{_appdir}/importxml.pl
+%attr(755,root,root) %{_appdir}/mod_perl.pl
+%attr(755,root,root) %{_appdir}/testserver.pl
+%attr(755,root,root) %{_appdir}/whine.pl
+%attr(755,root,root) %{_appdir}/whineatnews.pl
 
 %dir %{_appdir}/htdocs
+%attr(755,root,root) %{_appdir}/htdocs/*.cgi
 %{_appdir}/htdocs/*.dtd
 %{_appdir}/htdocs/*.js
 %{_appdir}/htdocs/*.txt
@@ -145,8 +155,11 @@ fi
 %{_appdir}/htdocs/graphs
 %{_appdir}/htdocs/images
 %{_appdir}/htdocs/js
-%{_appdir}/htdocs/skins
-%attr(755,root,root) %{_appdir}/htdocs/*.cgi
+%dir %{_appdir}/htdocs/skins
+%dir %{_appdir}/htdocs/skins/contrib
+%dir %{_appdir}/htdocs/skins/custom
+%{_appdir}/htdocs/skins/standard
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_appdir}/htdocs/skins/custom/*.css
 
 %dir /var/lib/%{name}
 %attr(770,root,http) /var/lib/%{name}/data
