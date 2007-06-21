@@ -1,18 +1,16 @@
 # TODO
 # - Split DB packages for mysql/pgsql
 # - fill brr and add autodeps bcond
-%define		_rc		rc1
-%define		_rel	0.2
 %include	/usr/lib/rpm/macros.perl
 Summary:	Bug tracking system
 Summary(pl.UTF-8):	System śledzenia błędów
 Name:		bugzilla
 Version:	3.0
-Release:	0.%{_rc}.%{_rel}
+Release:	0.1
 License:	GPL
 Group:		Applications/WWW
-Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}%{_rc}.tar.gz
-# Source0-md5:	638dc6ef374874806f3388c9bf24c802
+Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}.tar.gz
+# Source0-md5:	9a56a47cdbfcb70a85ad73d923ac7e9d
 Source1:	%{name}.conf
 Source2:	%{name}-localconfig.pl
 Source3:	%{name}.cron
@@ -21,10 +19,10 @@ URL:		http://www.bugzilla.org/
 BuildRequires:	rpm-perlprov >= 4.1-13
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	sed >= 4.0
+Requires:	perl(Email::MIME::Modifier)
+Requires:	perl(Email::Send) >= 2.00
 Requires:	perl-DBD-mysql
 Requires:	perl-DBI >= 1.41
-Requires:	perl(Email::Send) >= 2.00
-Requires:	perl(Email::MIME::Modifier)
 Requires:	perl-MailTools >= 1.67
 Requires:	smtpdaemon
 Requires:	webapps
