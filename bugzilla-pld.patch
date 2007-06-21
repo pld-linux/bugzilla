@@ -88,12 +88,7 @@
      );
  
      # This sets the permissions for each item inside each of these 
-@@ -133,34 +116,16 @@
-     # the webserver.
-     my %recurse_dirs = (
-         # Writeable directories
--        "$datadir/template" => { files => $ws_readable, 
--                                  dirs => $ws_dir_full_control },
+@@ -138,29 +121,13 @@
           $attachdir         => { files => $ws_writeable,
                                    dirs => $ws_dir_writeable },
           $webdotdir         => { files => $ws_writeable,
@@ -123,7 +118,7 @@
           'docs/html'           => { files => $ws_readable,
                                       dirs => $ws_dir_readable },
           'docs/pdf'            => { files => $ws_readable,
-@@ -186,7 +151,7 @@
+@@ -186,7 +153,7 @@
          "$datadir/duplicates"   => $ws_dir_readable,
          $attachdir              => $ws_dir_writeable,
          $extensionsdir          => $ws_dir_readable,
