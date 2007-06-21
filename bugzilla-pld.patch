@@ -55,3 +55,80 @@
          # $webdotdir must be in the webtree somewhere. Even if you use a 
          # local dot, we output images to there. Also, if $webdotdir is 
          # not relative to the bugzilla root directory, you'll need to 
+--- bugzilla-3.0/Bugzilla/Install/Filesystem.pm	2006-12-09 13:58:14.000000000 +0200
++++ bugzilla-3.0/Bugzilla/Install/Filesystem.pm	2007-06-22 00:08:36.399403065 +0300
+@@ -99,21 +99,6 @@
+ 
+     # --- FILE PERMISSIONS (Non-created files) --- #
+     my %files = (
+-        '*'               => { perms => $ws_readable },
+-        '*.cgi'           => { perms => $ws_executable },
+-        'whineatnews.pl'  => { perms => $ws_executable },
+-        'collectstats.pl' => { perms => $ws_executable },
+-        'checksetup.pl'   => { perms => $owner_executable },
+-        'importxml.pl'    => { perms => $ws_executable },
+-        'runtests.pl'     => { perms => $owner_executable },
+-        'testserver.pl'   => { perms => $ws_executable },
+-        'whine.pl'        => { perms => $ws_executable },
+-        'customfield.pl'  => { perms => $owner_executable },
+-        'email_in.pl'     => { perms => $ws_executable },
+-
+-        'docs/makedocs.pl'   => { perms => $owner_executable },
+-        'docs/rel_notes.txt' => { perms => $ws_readable },
+-        'docs/README.docs'   => { perms => $owner_readable },
+         "$datadir/bugzilla-update.xml" => { perms => $ws_writeable },
+         "$datadir/params" => { perms => $ws_writeable },
+         "$datadir/mailer.testfile" => { perms => $ws_writeable },
+@@ -123,8 +108,6 @@
+     # recurse through. These are directories we didn't create
+     # in checkesetup.pl.
+     my %non_recurse_dirs = (
+-        '.'  => $ws_dir_readable,
+-        docs => $ws_dir_readable,
+     );
+ 
+     # This sets the permissions for each item inside each of these 
+@@ -133,34 +116,16 @@
+     # the webserver.
+     my %recurse_dirs = (
+         # Writeable directories
+-        "$datadir/template" => { files => $ws_readable, 
+-                                  dirs => $ws_dir_full_control },
+          $attachdir         => { files => $ws_writeable,
+                                   dirs => $ws_dir_writeable },
+          $webdotdir         => { files => $ws_writeable,
+                                   dirs => $ws_dir_writeable },
+-         graphs             => { files => $ws_writeable,
+-                                  dirs => $ws_dir_writeable },
+ 
+          # Readable directories
+          "$datadir/mining"     => { files => $ws_readable,
+                                      dirs => $ws_dir_readable },
+          "$datadir/duplicates" => { files => $ws_readable,
+                                      dirs => $ws_dir_readable },
+-         "$libdir/Bugzilla"    => { files => $ws_readable,
+-                                     dirs => $ws_dir_readable },
+-         $templatedir          => { files => $ws_readable,
+-                                     dirs => $ws_dir_readable },
+-         images                => { files => $ws_readable,
+-                                     dirs => $ws_dir_readable },
+-         css                   => { files => $ws_readable,
+-                                     dirs => $ws_dir_readable },
+-         js                    => { files => $ws_readable,
+-                                     dirs => $ws_dir_readable },
+-         skins                 => { files => $ws_readable,
+-                                     dirs => $ws_dir_readable },
+-         t                     => { files => $owner_readable,
+-                                     dirs => $owner_dir_readable },
+          'docs/html'           => { files => $ws_readable,
+                                      dirs => $ws_dir_readable },
+          'docs/pdf'            => { files => $ws_readable,
+@@ -186,7 +151,7 @@
+         "$datadir/duplicates"   => $ws_dir_readable,
+         $attachdir              => $ws_dir_writeable,
+         $extensionsdir          => $ws_dir_readable,
+-        graphs                  => $ws_dir_writeable,
++        "$datadir/graphs"       => $ws_dir_writeable,
+         $webdotdir              => $ws_dir_writeable,
+         'skins/custom'          => $ws_dir_readable,
+         'skins/contrib'         => $ws_dir_readable,
