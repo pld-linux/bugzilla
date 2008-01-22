@@ -5,12 +5,12 @@
 Summary:	Bug tracking system
 Summary(pl.UTF-8):	System śledzenia błędów
 Name:		bugzilla
-Version:	3.0
-Release:	0.4
+Version:	3.0.3
+Release:	0.1
 License:	GPL
 Group:		Applications/WWW
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}.tar.gz
-# Source0-md5:	9a56a47cdbfcb70a85ad73d923ac7e9d
+# Source0-md5:	21bc2e2497c0c8ddfd42531363bb95b9
 Source1:	%{name}-skins.tar.bz2
 # Source1-md5:	4e6e8c2b65cab635975eff5ab318057b
 Source2:	%{name}.conf
