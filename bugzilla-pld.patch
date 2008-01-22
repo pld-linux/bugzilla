@@ -47,11 +47,11 @@
 -        'localconfig' => "$libpath/$localconfig",
 -        'datadir'     => "$libpath/$datadir",
 -        'attachdir'   => "$libpath/$datadir/attachments",
--        'skinsdir'    => "$libpath/skins/contrib",
+-        'skinsdir'    => "$libpath/skins",
 +        'localconfig' => "/etc/webapps/bugzilla/$localconfig",
 +        'datadir'     => "/var/lib/bugzilla/$datadir",
 +        'attachdir'   => "/var/lib/bugzilla/$datadir/attachments",
-+        'skinsdir'    => "/usr/share/bugzilla/htdocs/skins/contrib",
++        'skinsdir'    => "/usr/share/bugzilla/htdocs/skins",
          # $webdotdir must be in the webtree somewhere. Even if you use a 
          # local dot, we output images to there. Also, if $webdotdir is 
          # not relative to the bugzilla root directory, you'll need to 
