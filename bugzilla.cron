@@ -2,4 +2,3 @@
 cd /usr/share/bugzilla
 ./collectstats.pl
 ./whineatnews.pl
-echo "*** Bugzilla nighlty flush has done! ***"
