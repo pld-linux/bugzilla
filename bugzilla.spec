@@ -18,6 +18,9 @@ Source3:	%{name}-localconfig.pl
 Source4:	%{name}.cron
 Patch0:		%{name}-pld.patch
 URL:		http://www.bugzilla.org/
+# http://www.bugzilla.org/security/3.0.7/
+# Upgrade to 3.0.7, 3.2.1 or 3.3.2 required:
+BuildRequires:	security(2009-02-03)
 BuildRequires:	rpm-perlprov >= 4.1-13
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	sed >= 4.0
