@@ -5,12 +5,12 @@
 Summary:	Bug tracking system
 Summary(pl.UTF-8):	System śledzenia błędów
 Name:		bugzilla
-Version:	3.0.3
+Version:	3.3.3
 Release:	0.1
 License:	GPL
 Group:		Applications/WWW
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/webtools/%{name}-%{version}.tar.gz
-# Source0-md5:	21bc2e2497c0c8ddfd42531363bb95b9
+# Source0-md5:	893273266255f15e5b253719e8abcb50
 Source1:	%{name}-skins.tar.bz2
 # Source1-md5:	4e6e8c2b65cab635975eff5ab318057b
 Source2:	%{name}.conf
@@ -18,9 +18,6 @@ Source3:	%{name}-localconfig.pl
 Source4:	%{name}.cron
 Patch0:		%{name}-pld.patch
 URL:		http://www.bugzilla.org/
-# http://www.bugzilla.org/security/3.0.7/
-# Upgrade to 3.0.7, 3.2.1 or 3.3.2 required:
-BuildRequires:	security(2009-02-03)
 BuildRequires:	rpm-perlprov >= 4.1-13
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	sed >= 4.0
@@ -80,7 +77,7 @@ install *.pl $RPM_BUILD_ROOT%{_appdir}
 cp -a template $RPM_BUILD_ROOT%{_appdir}
 cp -a Bugzilla{,.pm} $RPM_BUILD_ROOT%{perl_vendorlib}
 
-install *.{cgi,js,txt,dtd,xul} $RPM_BUILD_ROOT%{_appdir}/htdocs
+install *.{cgi,txt,dtd} js/*.js $RPM_BUILD_ROOT%{_appdir}/htdocs
 cp -a images js skins $RPM_BUILD_ROOT%{_appdir}/htdocs
 
 ln -s /var/lib/%{name}/graphs $RPM_BUILD_ROOT%{_appdir}/htdocs
@@ -126,8 +123,8 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc QUICKSTART README UPGRADING* docs/rel_notes.txt docs/txt/Bugzilla-Guide.txt
-%doc contrib docs/html
+%doc QUICKSTART README UPGRADING* docs/en/rel_notes.txt docs/en/txt/Bugzilla-Guide.txt
+%doc contrib docs/en/html
 %dir %attr(750,root,http) %{_sysconfdir}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf
@@ -144,7 +141,10 @@ fi
 %attr(755,root,root) %{_appdir}/collectstats.pl
 %attr(755,root,root) %{_appdir}/email_in.pl
 %attr(755,root,root) %{_appdir}/importxml.pl
+%attr(755,root,root) %{_appdir}/install-module.pl
+%attr(755,root,root) %{_appdir}/jobqueue.pl
 %attr(755,root,root) %{_appdir}/mod_perl.pl
+%attr(755,root,root) %{_appdir}/sanitycheck.pl
 %attr(755,root,root) %{_appdir}/testserver.pl
 %attr(755,root,root) %{_appdir}/whine.pl
 %attr(755,root,root) %{_appdir}/whineatnews.pl
@@ -154,15 +154,16 @@ fi
 %{_appdir}/htdocs/*.dtd
 %{_appdir}/htdocs/*.js
 %{_appdir}/htdocs/*.txt
-%{_appdir}/htdocs/*.xul
 %{_appdir}/htdocs/graphs
 %{_appdir}/htdocs/images
 %{_appdir}/htdocs/js
 %dir %{_appdir}/htdocs/skins
 %dir %{_appdir}/htdocs/skins/contrib
+%dir %{_appdir}/htdocs/skins/contrib/Dusk
 %dir %{_appdir}/htdocs/skins/custom
 %{_appdir}/htdocs/skins/standard
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_appdir}/htdocs/skins/custom/*.css
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_appdir}/htdocs/skins/contrib/Dusk/*.css
 
 %dir /var/lib/%{name}
 %attr(770,root,http) /var/lib/%{name}/data
