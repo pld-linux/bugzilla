@@ -18,6 +18,8 @@ Source3:	%{name}-localconfig.pl
 Source4:	%{name}.cron
 Patch0:		%{name}-pld.patch
 URL:		http://www.bugzilla.org/
+# http://www.bugzilla.org/security/3.2.2/
+BuildRequires:	security(3.2.2)
 BuildRequires:	rpm-perlprov >= 4.1-13
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	sed >= 4.0
