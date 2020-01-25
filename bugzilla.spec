@@ -1,7 +1,6 @@
 # TODO
 # - Split DB packages for mysql/pgsql
 # - fill brr and add autodeps bcond
-%include	/usr/lib/rpm/macros.perl
 Summary:	Bug tracking system
 Summary(pl.UTF-8):	System śledzenia błędów
 Name:		bugzilla
